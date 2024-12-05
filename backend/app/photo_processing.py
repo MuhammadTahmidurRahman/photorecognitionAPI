@@ -1,4 +1,5 @@
 import json
+import base64
 import cv2
 import face_recognition
 import firebase_admin
@@ -10,12 +11,17 @@ import os
 
 # Initialize Firebase
 if not firebase_admin._apps:
-    cred = credentials.Certificate("backend/pictora-7f0ad-firebase-adminsdk-hpzf5-f730a1a51c.json")  # Update path
-    firebase_admin.initialize_app(cred, {
-        'storageBucket': 'pictora-7f0ad.appspot.com',
-        'databaseURL': 'https://pictora-7f0ad-default-rtdb.asia-southeast1.firebasedatabase.app/'
-    })
-
+    # Load Firebase service account credentials from environment variable
+    encoded_credentials = os.environ.get('GOOGLE_CREDENTIALS')
+    if encoded_credentials:
+        decoded_credentials = base64.b64decode(encoded_credentials).decode('utf-8')
+        cred = credentials.Certificate(json.loads(decoded_credentials))  # Load JSON from decoded string
+        firebase_admin.initialize_app(cred, {
+            'storageBucket': 'pictora-7f0ad.appspot.com',
+            'databaseURL': 'https://pictora-7f0ad-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        })
+    else:
+        raise ValueError("Firebase credentials are not set in the environment variables.")
 
 # Load Haar Cascade for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
