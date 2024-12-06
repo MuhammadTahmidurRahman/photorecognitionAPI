@@ -1,4 +1,4 @@
-"_comment:{
+{
   "version": 2,
   "builds": [
     {
@@ -9,17 +9,12 @@
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "run.py"
-    }
+   "routes": [
+        {
+          "src": "/(.*)",
+          "dest": "/"
+        }
   ]
 }
-  "
+  
 
-  {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
-  }
